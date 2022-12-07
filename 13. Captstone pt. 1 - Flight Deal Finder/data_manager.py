@@ -6,17 +6,18 @@ headers = {
     "Authorization": f"Bearer kjfbw45pojbe4vev64gre"
 }
 
+
 class DataManager:
-    #This class is responsible for talking to the Google Sheet.
+    """This class is responsible for talking to the Google Sheet."""
     def __init__(self):
         self.destinations = {}
-
+    
     def get_destinations(self):
         response = re.get(url=URL, headers=headers)
         result = response.json()
         self.destinations = result["prices"]
         return self.destinations
-
+    
     def update_destination_codes(self):
         for city in self.destinations:
             new_data = {
@@ -30,5 +31,3 @@ class DataManager:
                 json=new_data
             )
             print(response.text)
-
-
