@@ -1,8 +1,9 @@
+import os
 import requests as re
 from flight_data import FlightData
 
-TEQUILA_ENDPOINT = "https://tequila-api.kiwi.com"
-TEQUILA_API_KEY = "vUojMjD7bRWle2BDboZ2EfKvPIAN_DXI"
+TEQUILA_ENDPOINT = os.environ['TEQUILA_ENDPOINT']
+TEQUILA_API_KEY = os.environ['TEQUILA_API_KEY']
 
 
 class FlightSearch:
@@ -25,7 +26,7 @@ class FlightSearch:
                  "date_from": date_from,
                  "date_to": date_to,
                  "flight_type": "round",
-                 "price_to": max_price,
+                 "price_to": max_price * 2,
                  "adults": 2,
                  "nights_in_dst_from": min_nights,
                  "nights_in_dst_to": max_nights,
@@ -33,22 +34,20 @@ class FlightSearch:
                  "one_for_city": 1,
                  "currency": "EUR"}
         response = re.get(url=location_endpoint, headers=headers, params=query)
-        
         try:
             data = response.json()["data"][0]
-        except IndexError:
+        except (KeyError, IndexError):
             print(f"No flights found for {destination}.")
             return None
 
         flight_data = FlightData(
-            price=data["price"],
+            amount=data["price"],
             origin_city=data["route"][0]["cityFrom"],
             origin_airport=data["route"][0]["flyFrom"],
-            destination_city=data["route"][0]["cityTo"],
-            destination_airport=data["route"][0]["flyTo"],
+            destination_city=data["cityTo"],
+            destination_airport=data["cityCodeTo"],
             out_date=data["route"][0]["local_departure"].split("T")[0],
             return_date=data["route"][1]["local_departure"].split("T")[0]
         )
-        print(f"{flight_data.destination_city}: €{flight_data.price}")
         return flight_data
-
+    
