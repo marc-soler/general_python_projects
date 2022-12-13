@@ -1,9 +1,13 @@
 import os
+
 import requests as re
+
 from flight_data import FlightData
 
 TEQUILA_ENDPOINT = os.environ['TEQUILA_ENDPOINT']
 TEQUILA_API_KEY = os.environ['TEQUILA_API_KEY']
+
+flight_data = FlightData()
 
 
 class FlightSearch:
@@ -26,11 +30,11 @@ class FlightSearch:
                  "date_from": date_from,
                  "date_to": date_to,
                  "flight_type": "round",
-                 "price_to": max_price * 2,
-                 "adults": 2,
+                 "price_to": max_price,
+                 "adults": 1,
                  "nights_in_dst_from": min_nights,
                  "nights_in_dst_to": max_nights,
-                 "max_stopovers": 2,
+                 "max_stopovers": 3,
                  "one_for_city": 1,
                  "currency": "EUR"}
         response = re.get(url=location_endpoint, headers=headers, params=query)
@@ -39,15 +43,13 @@ class FlightSearch:
         except (KeyError, IndexError):
             print(f"No flights found for {destination}.")
             return None
-
-        flight_data = FlightData(
-            amount=data["price"],
-            origin_city=data["route"][0]["cityFrom"],
-            origin_airport=data["route"][0]["flyFrom"],
-            destination_city=data["cityTo"],
-            destination_airport=data["cityCodeTo"],
-            out_date=data["route"][0]["local_departure"].split("T")[0],
-            return_date=data["route"][1]["local_departure"].split("T")[0]
-        )
-        return flight_data
-    
+        
+        output = {
+            'price': data["price"],
+            'destination_city': data["cityTo"],
+            'destination_airport': data["cityCodeTo"],
+            'departure_date': data["route"][0]["local_departure"].split("T")[0],
+            'return_date': data["route"][-1]["local_departure"].split("T")[0],
+            'booking_link': data["deep_link"]
+        }
+        return output
