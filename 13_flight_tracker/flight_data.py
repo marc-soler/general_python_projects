@@ -1,7 +1,8 @@
 class FlightData:
     """This class is responsible for structuring the flight data."""
+    
     def __init__(self):
-        self.data = dict
+        self.data = {}
     
     def append_data(self, amount, destination_city, destination_airport, out_date,
                     return_date, link):
@@ -13,3 +14,4 @@ class FlightData:
             "booking_link": link
         }}
         self.data.update(data_update)
+
