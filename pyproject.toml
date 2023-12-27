@@ -4,14 +4,15 @@ version = "0.1.0"
 description = ""
 authors = ["Marc Soler <msolerjosa@gmail.com>"]
 readme = "README.md"
-packages = [{include = "general_python_projects"}]
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.13"
-pandas = "^2.1.1"
-numpy = "^1.26.0"
-Django = "^4.2.6"
+python = "^3.12"
+pandas = "^2.1.4"
+numpy = "^1.26.2"
+plotly = "^5.18.0"
 requests = "^2.31.0"
+Django = "^5.0"
+seaborn = "^0.13.0"
 
 
 [build-system]
